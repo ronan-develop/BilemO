@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -42,17 +43,11 @@ class ProductRepository extends ServiceEntityRepository
 
     public function findAllWithPagination($page, $limit) {
         $qb = $this->createQueryBuilder('b')
+            // from
             ->setFirstResult(($page - 1) * $limit)
+            // nb to return
             ->setMaxResults($limit);
         return $qb->getQuery()->getResult();
-    }
-
-    public function countAll(?UserInterface $client = null)
-    {
-        $queryBuilder = $this->createQueryBuilder('p')
-            ->select('count(p)');
-
-        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
 //    /**
