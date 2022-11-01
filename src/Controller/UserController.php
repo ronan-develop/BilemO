@@ -7,6 +7,7 @@ use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +43,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/api/users/{id}', name: 'app_user_delete', methods: ['DELETE'])]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un utilisateur')]
     public function deleteOneUser(User $user, EntityManagerInterface $em): JsonResponse
     {
         $this->userService->delete($user);
