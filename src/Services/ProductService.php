@@ -12,7 +12,7 @@ class ProductService implements IPaginationService
 {
     public function __construct(
         private readonly ProductRepository      $productRepository,
-        private readonly TagAwareCacheInterface $cache
+        private readonly TagAwareCacheInterface $cache,
     )
     {
     }
@@ -40,7 +40,7 @@ class ProductService implements IPaginationService
         return $this->cache->get($idCache, function (ItemInterface $item) use ($page, $limit) {
             echo("NOT IN CACHE YET\n");
             $item->tag("productsCache");
-            return $this->productService->findAllWithPagination($page, $limit);
+            return $this->findAllWithPagination($page, $limit);
         });
     }
 
