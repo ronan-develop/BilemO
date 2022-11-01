@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -25,7 +26,7 @@ class ProductService implements IPaginationService
         return $this->productRepository->findAllWithPagination($page, $limit);
     }
 
-    public function find(int $id): ?\App\Entity\Product
+    public function find(int $id): ?Product
     {
         return $this->productRepository->find($id);
     }

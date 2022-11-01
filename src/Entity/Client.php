@@ -34,7 +34,6 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['getClients'])]
     #[Assert\NotBlank(message: "Un mot de passe est requis")]
     #[Assert\Length(min: 6, max: 50, minMessage: "Mot de passe: minimum {{ limit }} caractères", maxMessage: "Mot de passe: maximum{{ limit }} caractères")]
     private ?string $password = null;
@@ -43,6 +42,7 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $users;
 
     #[ORM\Column]
+    #[Groups(['getClients'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()

@@ -34,7 +34,6 @@ class User
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
-    #[Groups(['getClients'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Client $client = null;
 

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -15,6 +16,7 @@ class UserService implements IPaginationService
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly TagAwareCacheInterface $cache,
+        private readonly EntityManagerInterface $em
     )
     {
     }
@@ -50,5 +52,11 @@ class UserService implements IPaginationService
             return $this->findAllWithPagination($page, $limit);
         });
 
+    }
+
+    public function delete(User $user)
+    {
+        $this->em->remove($user);
+        $this->em->flush();
     }
 }
