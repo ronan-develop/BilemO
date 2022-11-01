@@ -30,16 +30,17 @@ class ProductService implements IPaginationService
     /**
      * @throws InvalidArgumentException
      */
-    public function cache(string $route, Request $request)
+    public function cache(Request $request)
     {
         $page = (int) $request->get(key: 'page', default: 1);
         $limit = (int) $request->get(key: 'limit', default: 3);
 
-        $cacheId = "$route-page-$page-productPerPage-$limit";
+        $idCache = "getAllProducts-".$page."-".$limit;
 
-        return $this->cache->get($cacheId, function (ItemInterface $item) use ($page, $limit) {
-            $item->tag('productsCache');
-            return $this->findAllWithPagination($page, $limit);
+        return $this->cache->get($idCache, function (ItemInterface $item) use ($page, $limit) {
+            echo("NOT IN CACHE YET\n");
+            $item->tag("productsCache");
+            return $this->productService->findAllWithPagination($page, $limit);
         });
     }
 

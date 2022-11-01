@@ -13,14 +13,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class ProductController extends AbstractController
 {
     public function __construct(
-        private readonly ProductService $productService,
-        private readonly TagAwareCacheInterface $cache
+        private readonly ProductService $productService
     )
     {
     }
@@ -29,19 +26,12 @@ class ProductController extends AbstractController
      * @throws InvalidArgumentException
      */
     #[Route('/api/products', name: 'app_products', methods: ['GET'])]
-    public function getAllProducts(SerializerInterface $serializer, Request $request, ProductRepository $productRepository): JsonResponse
+    public function getAllProducts(SerializerInterface $serializer, Request $request): JsonResponse
     {
-        $page = (int) $request->get(key: 'page', default: 1);
-        $limit = (int) $request->get(key: 'limit', default: 3);
 
         $context = SerializationContext::create()->setGroups(['getProducts']);
-        $idCache = "getAllProducts-".$page."-".$limit;
 
-        $productsData = $this->cache->get($idCache, function (ItemInterface $item) use ($productRepository, $page, $limit) {
-            echo("NOT IN CACHE YET\n");
-            $item->tag("productsCache");
-            return $this->productService->findAllWithPagination($page, $limit);
-        });
+        $productsData = $this->productService->cache($request);
 
         $json = $serializer->serialize($productsData, 'json', $context);
         return new JsonResponse($json, Response::HTTP_OK, [], true);
