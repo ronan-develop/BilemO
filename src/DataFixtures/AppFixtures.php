@@ -82,13 +82,23 @@ class AppFixtures extends Fixture
         $simpleClient = new Client();
         $simpleClient->setEmail("employee@company.com")
             ->setPassword($this->userPasswordHasher->hashPassword($simpleClient, "password"))
-            ->setRoles(['ROLE_USER']);
+            ->setRoles(['ROLE_USER'])
+            ->setCreatedAt(
+                (new DateTimeImmutable())
+                    ->setTime(mt_rand(0, 24), mt_rand(0, 60), mt_rand(0, 60))
+                    ->setDate(mt_rand(2020, 2022), mt_rand(0, 12), mt_rand(0, 30))
+            );
         $manager->persist($simpleClient);
 
         $admin = new Client();
         $admin->setEmail("admin@company.com")
             ->setPassword($this->userPasswordHasher->hashPassword($admin, "password"))
-            ->setRoles(['ROLE_ADMIN']);
+            ->setRoles(['ROLE_ADMIN'])
+            ->setCreatedAt(
+                (new DateTimeImmutable())
+                    ->setTime(mt_rand(0, 24), mt_rand(0, 60), mt_rand(0, 60))
+                    ->setDate(mt_rand(2020, 2022), mt_rand(0, 12), mt_rand(0, 30))
+            );
         $manager->persist($admin);
 
         // User

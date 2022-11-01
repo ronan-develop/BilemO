@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,13 +25,13 @@ class User
 
     #[ORM\Column(length: 255)]
     #[Groups(['getClients'])]
-    #[Assert\NotBlank(message: "Email est requis .")]
+    #[Assert\NotBlank(message: "Email est requis.")]
     #[Assert\Email(message: "Votre email doit être valide.")]
     private ?string $email = null;
 
     #[ORM\Column]
     #[Groups(['getClients'])]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[Groups(['getClients'])]
@@ -66,12 +67,12 @@ class User
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 

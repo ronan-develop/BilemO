@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -12,21 +13,28 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['getProducts'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['getProducts'])]
     private ?string $model = null;
 
     #[ORM\Column]
+    #[Groups(['getProducts'])]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['getProducts'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['getProducts'])]
     private ?string $imagePath = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['getProducts'])]
     private ?Brand $brand = null;
 
     public function getId(): ?int
