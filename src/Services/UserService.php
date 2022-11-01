@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +22,11 @@ class UserService implements IPaginationService
     public function findAllWithPagination($page, $limit)
     {
         return $this->userRepository->findAllWithPagination($page, $limit);
+    }
+
+    public function find(int $id): ?User
+    {
+        return $this->userRepository->find($id);
     }
 
     /**

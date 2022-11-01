@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Services\UserService;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -29,4 +30,16 @@ class UserController extends AbstractController
         $json = $serializer->serialize($usersData, 'json', $context);
         return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
+
+    #[Route('/api/users/{id}', name: 'app_user', methods: ['GET'])]
+    public function getOneUser(User $user, SerializerInterface $serializer, Request $request): JsonResponse
+    {
+        $context = SerializationContext::create()->setGroups(['getProducts']);
+
+        $userData = $this->userService->find($request->get('id'));
+
+        $json = $serializer->serialize($userData, 'json', $context);
+        return new JsonResponse($json, Response::HTTP_OK, ['accept'=>'json'], true);
+    }
+
 }
