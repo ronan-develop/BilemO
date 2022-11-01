@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -48,6 +49,18 @@ class ProductRepository extends ServiceEntityRepository
             // nb to return
             ->setMaxResults($limit);
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function countAll(?UserInterface $client = null)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
 //    /**

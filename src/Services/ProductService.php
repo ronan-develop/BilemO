@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Repository\ProductRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
@@ -25,6 +28,15 @@ class ProductService implements IPaginationService
     public function find(int $id): ?\App\Entity\Product
     {
         return $this->productRepository->find($id);
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function countAll(?UserInterface $client = null)
+    {
+        return $this->productRepository->countAll($client);
     }
 
     /**
