@@ -2,11 +2,18 @@
 
 namespace App\Services;
 
+use App\Entity\Client;
 use App\Entity\User;
+use App\Repository\ClientRepository;
 use App\Repository\UserRepository;
+use DateTimeImmutable;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Exception;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
@@ -16,7 +23,9 @@ class UserService implements IPaginationService
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly TagAwareCacheInterface $cache,
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly SerializerInterface $serializer,
+        private readonly Security $security
     )
     {
     }
@@ -58,5 +67,32 @@ class UserService implements IPaginationService
     {
         $this->em->remove($user);
         $this->em->flush();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function create(Request $request): User
+    {
+        $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
+        $this->setCreateAtOnCreate($user);
+        $this->attachToClient($user);
+        $this->em->persist($user);
+        $this->em->flush();
+        return $user;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function setCreateAtOnCreate(User $user): void
+    {
+        $user->setCreatedAt(new DateTimeImmutable("now", new DateTimeZone('Europe/Paris')));
+    }
+
+    private function attachToClient(User $user): void
+    {
+        $client = $this->security->getUser();
+        $user->setClient($client);
     }
 }

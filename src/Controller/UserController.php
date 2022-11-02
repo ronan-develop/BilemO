@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
@@ -50,4 +52,22 @@ class UserController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
+    #[Route('/api/users', name: 'app_user_create', methods: ['POST'])]
+    #[IsGranted('ROLE_USER', message: 'Vous devez être enregistré')]
+    public function createOneUser(Request $request, ValidatorInterface $validator): JsonResponse
+    {
+        $user = $this->userService->create($request);
+        $errors = $validator->validate($user);
+        if($errors->count()>0) {
+            return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
+        }
+        return new JsonResponse($user, Response::HTTP_CREATED);
+    }
+
+
 }
+
+//        $this->denyAccessUnlessGranted('USER_EDIT, $user);
