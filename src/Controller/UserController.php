@@ -38,6 +38,8 @@ class UserController extends AbstractController
     #[Route('/api/users/{id}', name: 'app_user_details', methods: ['GET'])]
     public function getOneUser(User $user, SerializerInterface $serializer, Request $request): JsonResponse
     {
+        $this->denyAccessUnlessGranted('USER_VIEW', $user);
+
         $context = SerializationContext::create()->setGroups(['getClients']);
         $user = $this->userService->find($request->get('id'));
         $json = $serializer->serialize($user, 'json', $context);
@@ -48,6 +50,7 @@ class UserController extends AbstractController
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un utilisateur')]
     public function deleteOneUser(User $user, EntityManagerInterface $em): JsonResponse
     {
+        $this->denyAccessUnlessGranted('USER_DELETE', $user);
         $this->userService->delete($user);
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
@@ -70,6 +73,7 @@ class UserController extends AbstractController
     #[Route('/api/users/{id}', name: 'app_user_update', methods: ['PUT'])]
     public function updateOneUser(Request $request, User $currentUser, EntityManagerInterface $em): JsonResponse
     {
+        $this->denyAccessUnlessGranted('USER_EDIT', $currentUser);
         if($this->userService->update($request, $currentUser)){
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         };

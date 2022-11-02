@@ -9,8 +9,8 @@ use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
-use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializerInterface;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -47,6 +47,9 @@ class UserService implements IPaginationService
         return $this->userRepository->countAll($client);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function cache(Request $request)
     {
         $page = (int) $request->get(key:'page', default: 1);
@@ -64,15 +67,18 @@ class UserService implements IPaginationService
 
     public function delete(User $user)
     {
+        $this->cache->invalidateTags(["usersCache"]);
         $this->em->remove($user);
         $this->em->flush();
     }
 
     /**
      * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function create(Request $request): User
     {
+        $this->cache->invalidateTags(["usersCache"]);
         $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
         $this->setCreateAtOnCreate($user);
         $this->attachToClient($user);
@@ -95,8 +101,12 @@ class UserService implements IPaginationService
         $user->setClient($client);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function update(Request $request, User $currentUser): bool
     {
+        $this->cache->invalidateTags(["usersCache"]);
         $newUser = $this->serializer->deserialize($request->getContent(), User::class, 'json');
         $currentUser->setUsername($newUser->getUsername() ?? $currentUser->getUsername());
         $currentUser->setEmail($newUser->getEmail() ?? $currentUser->getEmail());
