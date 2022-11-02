@@ -2,15 +2,14 @@
 
 namespace App\Services;
 
-use App\Entity\Client;
 use App\Entity\User;
-use App\Repository\ClientRepository;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -94,5 +93,15 @@ class UserService implements IPaginationService
     {
         $client = $this->security->getUser();
         $user->setClient($client);
+    }
+
+    public function update(Request $request, User $currentUser): bool
+    {
+        $newUser = $this->serializer->deserialize($request->getContent(), User::class, 'json');
+        $currentUser->setUsername($newUser->getUsername() ?? $currentUser->getUsername());
+        $currentUser->setEmail($newUser->getEmail() ?? $currentUser->getEmail());
+        $this->em->persist($currentUser);
+        $this->em->flush();
+        return true;
     }
 }

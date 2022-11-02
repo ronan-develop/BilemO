@@ -67,7 +67,13 @@ class UserController extends AbstractController
         return new JsonResponse($user, Response::HTTP_CREATED);
     }
 
+    #[Route('/api/users/{id}', name: 'app_user_update', methods: ['PUT'])]
+    public function updateOneUser(Request $request, User $currentUser, EntityManagerInterface $em): JsonResponse
+    {
+        if($this->userService->update($request, $currentUser)){
+            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        };
+        return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
+    }
 
 }
-
-//        $this->denyAccessUnlessGranted('USER_EDIT, $user);
