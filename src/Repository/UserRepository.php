@@ -5,7 +5,9 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -50,6 +52,18 @@ class UserRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function countAll(?UserInterface $client)
+    {
+        $queryBuilder = $this->createQueryBuilder('user')
+            ->select('COUNT(user)')
+            ->where("user.client = :client")
+            ->setParameter('client', $client);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
