@@ -10,16 +10,16 @@ nelmio_api_doc:
                     tags:
                         - Token
                     operationId: postCredentialsItem
-                    summary: Obtenir le Token JWT de login
+                    summary: Get JWT Token (Login)
                     requestBody:
-                        description: Créer un nouveau Token JWT
+                        description: Create a new JWT Token
                         content:
                             application/json:
                                 schema:
                                     $ref: '#/components/schemas/Credentials'
                     responses:
                         '200':
-                            description: Récupère le Token JWT
+                            description: Get the JWT Token
                             content:
                                 application/json:
                                     schema:
@@ -38,10 +38,10 @@ nelmio_api_doc:
                     properties:
                         username:
                             type: string
-                            default: ronan.lenouvel@gmail.com
+                            default: your.email@company.com
                         password:
                             type: string
-                            default: password
+                            default: '********'
             securitySchemes:
                 bearerAuth:
                     type: apiKey

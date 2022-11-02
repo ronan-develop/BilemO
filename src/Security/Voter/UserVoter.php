@@ -36,36 +36,26 @@ class UserVoter extends Voter
             return false;
         }
         // check is client is admin
-        if($this->security->isGranted(["ROLE_ADMIN"])) return true;
+        if ($this->security->isGranted(["ROLE_ADMIN"])) return true;
 
         // check if user has client
-        if(null === $subject->getUsername()) return false;
+        if (null === $subject->getUsername()) return false;
         // ... (check conditions and return true to grant permission) ...
 
         return match ($attribute) {
-            self::EDIT => $this->canUpdate($subject, $user),
-            self::VIEW => $this->canView($subject, $user),
-            self::DELETE => $this->canDelete($subject, $user),
+            self::EDIT,
+            self::VIEW,
+            self::DELETE => $this->canOperate($subject, $user),
             default => false,
         };
 
     }
 
-    private function canView(User $user, Client $client): bool
+    private function canOperate(User $user, Client $client): bool
     {
-        // owner can read
-        return $client === $user->getClient();
-    }
-
-    private function canUpdate(User $user, Client $client): bool
-    {
-        // owner can delete
-        return $client === $user->getClient();
-    }
-
-    private function canDelete(User $user, Client $client): bool
-    {
-        // owner can delete
-        return $client === $user->getClient();
+        if ($this->security->isGranted('ROLE_ADMIN') or $client === $user->getClient()) {
+            return true;
+        }
+        return false;
     }
 }
