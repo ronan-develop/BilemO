@@ -7,6 +7,36 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Hateoas\Configuration\Annotation as Hateoas;
+
+
+/**
+ * @Hateoas\Relation(
+ *      "details",
+ *      href = @Hateoas\Route(
+ *          "app_user_details",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getClients")
+ * )
+ * @Hateoas\Relation(
+ *      "update",
+ *      href = @Hateoas\Route(
+ *          "app_user_update",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      ),
+ *       exclusion = @Hateoas\Exclusion(groups="getClients"),
+ * )
+ * @Hateoas\Relation(
+ *      "delete",
+ *      href = @Hateoas\Route(
+ *          "app_user_delete",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      ),
+ *       exclusion = @Hateoas\Exclusion(groups="getClients"),
+ * )
+ *
+ */
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
