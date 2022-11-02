@@ -10,6 +10,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
 use OpenApi\Attributes as OA;
 
 /**
+ * method to get all products
  * @Hateoas\Relation(
  *      "self",
  *      href = @Hateoas\Route(
