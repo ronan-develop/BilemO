@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundcolor AntiqueWhite/#EBAF10
+scale 650 width
+
+skinparam class {
+    ArrowColor #631FF2
+    BorderColor #DB2790
+}
+
+header ""
+
+TITLE "Add a user"
+actor Client as c
+participant API as a #gray
+database Database as d #salmon
+
+c -> a: Request new user
+a -> a: Check request data
+a -> d: check user unicity
+activate d
+
+alt already exist
+a --[#red]> d: user already exist
+d --[#red]> a
+a -[#red]-> c: Response (409)\nValidation Failed
+end
+activate a
+
+d-[#green]>a: unicity true
+deactivate d
+a->d: persist data
+activate d
+d->a: confirmation
+deactivate d
+a-[#green]>c: Response 201
+
+
+@enduml
