@@ -14,6 +14,8 @@ use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
@@ -29,11 +31,22 @@ class UserService implements IPaginationService
     {
     }
 
-    public function findAllWithPagination($page, $limit)
+    /**
+     * Paginate results
+     * @param $page
+     * @param $limit
+     * @return float|int|mixed|string
+     */
+    public function findAllWithPagination($page, $limit): mixed
     {
         return $this->userRepository->findAllWithPagination($page, $limit);
     }
 
+    /**
+     * return user by id
+     * @param int $id
+     * @return User|null
+     */
     public function find(int $id): ?User
     {
         return $this->userRepository->find($id);
@@ -83,10 +96,14 @@ class UserService implements IPaginationService
     {
         $this->cache->invalidateTags(["usersCache"]);
         $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
-        $this->setCreateAtOnCreate($user);
-        $this->attachToClient($user);
-        $this->em->persist($user);
-        $this->em->flush();
+
+        if ($this->checkBeforeCreate($user)){
+            $this->setCreateAtOnCreate($user);
+            $this->attachToClient($user);
+            $this->em->persist($user);
+            $this->em->flush();
+        }
+
         return $user;
     }
 
@@ -115,6 +132,19 @@ class UserService implements IPaginationService
         $currentUser->setEmail($newUser->getEmail() ?? $currentUser->getEmail());
         $this->em->persist($currentUser);
         $this->em->flush();
+        return true;
+    }
+
+    /**
+     * return true if user doesn't exist
+     * @param $user
+     * @return bool
+     */
+    public function checkBeforeCreate($user): bool
+    {
+        if($this->userRepository->findOneBy(['email'=> $user->getEmail()])){
+            return false;
+        }
         return true;
     }
 }

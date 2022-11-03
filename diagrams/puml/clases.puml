@@ -1,0 +1,74 @@
+@startuml Classes diagram
+
+skinparam backgroundcolor AntiqueWhite/#EBAF10
+scale 650 width
+
+skinparam class {
+    ArrowColor #631FF2
+    BorderColor #DB2790
+}
+
+header ""
+
+TITLE "BilMo Classes"
+
+class Brand {
+    - private id
+    - private name
+    == Methods ==
+    + public getId()
+    + public getName()
+}
+
+class Client {
+    - private id
+    - private email
+    - private roles
+    == Methods ==
+    + public getId()
+    + public getEmail()
+    + public getRole()
+}
+
+class Product {
+     - private id
+     - private model
+     - private price
+     - private description
+     - private imagePath
+     == Methods ==
+        + public getId()
+        + public getModel()
+        + public getPrice()
+        + public getDescription()
+        + public getBrand()
+}
+
+class User {
+    - private id
+    - private username
+    - private email
+    - private createdAt
+    - private client
+    == Methods ==
+    + public getId()
+    + public getUsername()
+    + public getEmail()
+    + public getCreatedAt()
+    + public getClient()
+}
+'  enum class
+enum Role {
+    string T_R_ADMIN
+    string T_R_USER
+}
+
+Brand "1" o..> "0..*" Product:has
+Client "1" --o Role:is
+Client --> Product: consult
+Client --> User: handle
+
+@enduml
+
+
+@enduml

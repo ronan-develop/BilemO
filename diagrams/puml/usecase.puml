@@ -1,0 +1,52 @@
+@startuml
+left to right direction
+skinparam backgroundcolor AntiqueWhite/#EBAF10
+scale 650 width
+
+skinparam class {
+    ArrowColor #631FF2
+    BorderColor #DB2790
+}
+
+header ""
+
+TITLE "Use cases"
+package Actor {
+    :client: as c
+    :admin: as a
+}
+package API {
+    usecase "List all Products" as list
+    usecase "List one Product" as details
+    usecase "Update one Product" as update
+    usecase "remove one Product" as remove
+}
+
+package Auth {
+    usecase "Authenticate"
+    usecase "JWT Token"
+}
+
+c--> list
+c--> details
+c--> update
+c--> remove
+a--|>c
+
+list --> (Authenticate): << include >>
+details --> (Authenticate): << include >>
+update --> (Authenticate): << include >>
+remove --> (Authenticate): << include >>
+
+(Authenticate)->(JWT Token) :<<include>>
+
+@enduml
+3
+1345
+3
+134
+134
+2
+2
+35
+1

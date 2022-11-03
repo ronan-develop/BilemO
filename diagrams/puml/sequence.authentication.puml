@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundcolor AntiqueWhite/#EBAF10
+scale 650 width
+
+skinparam class {
+    ArrowColor #631FF2
+    BorderColor #DB2790
+}
+
+header ""
+
+TITLE "Authentication"
+actor Client as c
+participant API as a #gray
+database Database as d #salmon
+
+note right of c: ["POST"] method
+c -> a: Request login_check
+activate a
+alt wrong format
+a --[#red]> c:Response\nInvalid JSON (400)
+end
+a --> a: Check Request data
+a --> d: check Client
+alt wrong credentials
+a --[#red]> d: Check Client
+d --[#red]> a
+a -[#red]-> c: Response\nInvalid credentials (401)
+end
+activate d
+d --> a: user ok
+deactivate d
+a --> a: generate Token
+a -[#green]> c: Response\n(200)\nToken
+deactivate a
+@enduml

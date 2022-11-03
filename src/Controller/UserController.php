@@ -82,7 +82,7 @@ class UserController extends AbstractController
     #[Route('/api/users/{id}', name: 'app_user_delete', methods: ['DELETE'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un utilisateur')]
     #[OA\Tag('Users')]
-    public function deleteOneUser(User $user, EntityManagerInterface $em): JsonResponse
+    public function deleteOneUser(User $user): JsonResponse
     {
         $this->denyAccessUnlessGranted('USER_DELETE', $user);
         $this->userService->delete($user);
@@ -113,8 +113,8 @@ class UserController extends AbstractController
     {
         $user = $this->userService->create($request);
         $errors = $validator->validate($user);
-        if($errors->count()>0) {
-            return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
+        if($errors->count() > 0) {
+            return $this->json($errors, 409);
         }
         return new JsonResponse($user, Response::HTTP_CREATED);
     }

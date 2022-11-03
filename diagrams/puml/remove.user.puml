@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundcolor AntiqueWhite/#EBAF10
+scale 650 width
+
+skinparam class {
+    ArrowColor #631FF2
+    BorderColor #DB2790
+}
+
+header ""
+
+TITLE "Delete a user"
+actor Client as c
+participant API as a #gray
+database Database as d #salmon
+
+c -> a: Request delete user
+activate a
+a -> a: Check authorization
+activate d
+a -> d: remove user
+d -> a: success
+deactivate d
+a-[#green]>c: JsonResponse (204)
+alt not authorized
+
+a --[#red]> a: check authorization
+a -[#red]-> c: Response (403)\nAccess Denied
+end
+deactivate a
+
+
+@enduml
