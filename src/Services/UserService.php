@@ -65,6 +65,9 @@ class UserService implements IPaginationService
 
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function delete(User $user)
     {
         $this->cache->invalidateTags(["usersCache"]);

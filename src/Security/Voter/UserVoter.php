@@ -45,6 +45,7 @@ class UserVoter extends Voter
         return match ($attribute) {
             self::EDIT,
             self::VIEW,
+
             self::DELETE => $this->canOperate($subject, $user),
             default => false,
         };

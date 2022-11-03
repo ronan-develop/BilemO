@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use OpenApi\Attributes as OA;
 
 class UserController extends AbstractController
 {
@@ -24,7 +27,33 @@ class UserController extends AbstractController
     {
     }
 
+    /**
+     * Method to get all users registered in your account
+     * @param SerializerInterface $serializer
+     * @param Request $request
+     * @return JsonResponse
+     * @throws InvalidArgumentException
+     */
     #[Route('/api/users', name: 'app_user', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: "Return all users registered in your account",
+        content: new OA\JsonContent(
+        type: 'array',
+        items: new OA\Items(ref: new Model(type: User::class, groups: ['getUsers']))
+    )
+    )]
+    #[OA\Parameter(
+        name: "page",
+        description: "Page to get",
+        in: "query",
+    )]
+    #[OA\Parameter(
+        name: "limit",
+        description: "Products to display",
+        in: "query",
+    )]
+    #[OA\Tag('Users')]
     public function getAllUSers(SerializerInterface $serializer, Request $request): JsonResponse
     {
         $context = SerializationContext::create()->setGroups(['getClients']);
@@ -36,6 +65,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/api/users/{id}', name: 'app_user_details', methods: ['GET'])]
+    #[OA\Tag('Users')]
     public function getOneUser(User $user, SerializerInterface $serializer, Request $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('USER_VIEW', $user);
@@ -46,8 +76,12 @@ class UserController extends AbstractController
         return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[Route('/api/users/{id}', name: 'app_user_delete', methods: ['DELETE'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un utilisateur')]
+    #[OA\Tag('Users')]
     public function deleteOneUser(User $user, EntityManagerInterface $em): JsonResponse
     {
         $this->denyAccessUnlessGranted('USER_DELETE', $user);
@@ -56,10 +90,25 @@ class UserController extends AbstractController
     }
 
     /**
-     * @throws Exception
+     * @throws InvalidArgumentException
+     */
+    #[Route('/api/users/{id}', name: 'app_user_update', methods: ['PUT'])]
+    #[OA\Tag('Users')]
+    public function updateOneUser(Request $request, User $currentUser, EntityManagerInterface $em): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('USER_EDIT', $currentUser);
+        if($this->userService->update($request, $currentUser)){
+            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        };
+        return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
+    }
+
+    /**
+     * @throws Exception|InvalidArgumentException
      */
     #[Route('/api/users', name: 'app_user_create', methods: ['POST'])]
     #[IsGranted('ROLE_USER', message: 'Vous devez être enregistré')]
+    #[OA\Tag('Users')]
     public function createOneUser(Request $request, ValidatorInterface $validator): JsonResponse
     {
         $user = $this->userService->create($request);
@@ -68,16 +117,6 @@ class UserController extends AbstractController
             return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
         }
         return new JsonResponse($user, Response::HTTP_CREATED);
-    }
-
-    #[Route('/api/users/{id}', name: 'app_user_update', methods: ['PUT'])]
-    public function updateOneUser(Request $request, User $currentUser, EntityManagerInterface $em): JsonResponse
-    {
-        $this->denyAccessUnlessGranted('USER_EDIT', $currentUser);
-        if($this->userService->update($request, $currentUser)){
-            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
-        };
-        return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
     }
 
 }

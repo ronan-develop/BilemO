@@ -24,7 +24,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * Method to get all Products
+     * Method to get all products in catalogue
      * @param SerializerInterface $serializer
      * @param Request $request
      * @return JsonResponse
@@ -32,11 +32,24 @@ class ProductController extends AbstractController
      */
     #[Route('/api/products', name: 'app_products', methods: ['GET'])]
     #[OA\Response(
-        response: 200, description: "Return all products in the catalogue", content: new OA\JsonContent(
+        response: 200,
+        description: "Return all products in the catalogue",
+        content: new OA\JsonContent(
         type: 'array',
-        items: new OA\Items(ref: new Model(type: AlbumDto::class, groups: ['full']))
-    )
+        items: new OA\Items(ref: new Model(type: Product::class, groups: ['getProducts']))
+        )
     )]
+    #[OA\Parameter(
+        name: "page",
+        description: "Page to get",
+        in: "query",
+    )]
+    #[OA\Parameter(
+        name: "limit",
+        description: "Products to display",
+        in: "query",
+    )]
+    #[OA\Tag("Products")]
     public function getAllProducts(SerializerInterface $serializer, Request $request): JsonResponse
     {
         $context = SerializationContext::create()->setGroups(['getProducts']);
@@ -49,13 +62,21 @@ class ProductController extends AbstractController
 
     /**
      * Method to access product details
-     * @param Product $product
      * @param SerializerInterface $serializer
      * @param Request $request
      * @return JsonResponse
      */
     #[Route('/api/products/{id}', name: 'app_product_details', methods: ['GET'])]
-    public function getOneProduct(Product $product, SerializerInterface $serializer, Request $request): JsonResponse
+    #[OA\Response(
+        response: 200,
+        description: "Return product by Id",
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Product::class, groups: ['getProducts']))
+        )
+    )]
+    #[OA\Tag("Products")]
+    public function getOneProduct(SerializerInterface $serializer, Request $request): JsonResponse
     {
         $context = SerializationContext::create()->setGroups(['getProducts']);
 
