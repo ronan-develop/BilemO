@@ -114,7 +114,7 @@ class UserController extends AbstractController
         $user = $this->userService->create($request);
         $errors = $validator->validate($user);
         if($errors->count()>0) {
-            return $this->json($errors, 400);
+            return $this->json($errors, 409);
         }
         return new JsonResponse($user, Response::HTTP_CREATED);
     }
