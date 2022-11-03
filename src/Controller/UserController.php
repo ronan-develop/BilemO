@@ -109,11 +109,11 @@ class UserController extends AbstractController
     #[Route('/api/users', name: 'app_user_create', methods: ['POST'])]
     #[IsGranted('ROLE_USER', message: 'Vous devez être enregistré')]
     #[OA\Tag('Users')]
-    public function createOneUser(Request $request, ValidatorInterface $validator, SerializerInterface $serializer): JsonResponse
+    public function createOneUser(Request $request, ValidatorInterface $validator): JsonResponse
     {
         $user = $this->userService->create($request);
         $errors = $validator->validate($user);
-        if($errors->count()>0) {
+        if($errors->count() > 0) {
             return $this->json($errors, 409);
         }
         return new JsonResponse($user, Response::HTTP_CREATED);
