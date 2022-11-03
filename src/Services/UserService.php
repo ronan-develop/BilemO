@@ -83,10 +83,17 @@ class UserService implements IPaginationService
     {
         $this->cache->invalidateTags(["usersCache"]);
         $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
-        $this->setCreateAtOnCreate($user);
-        $this->attachToClient($user);
-        $this->em->persist($user);
-        $this->em->flush();
+
+        if ($this->checkBeforeCreate($user)){
+
+            $this->setCreateAtOnCreate($user);
+            $this->attachToClient($user);
+            $this->em->persist($user);
+            $this->em->flush();
+
+            return $user;
+        }
+
         return $user;
     }
 
@@ -115,6 +122,19 @@ class UserService implements IPaginationService
         $currentUser->setEmail($newUser->getEmail() ?? $currentUser->getEmail());
         $this->em->persist($currentUser);
         $this->em->flush();
+        return true;
+    }
+
+    /**
+     * return true if user doesn't exist
+     * @param $user
+     * @return bool
+     */
+    public function checkBeforeCreate($user): bool
+    {
+        if($this->userRepository->findOneBy(['email'=> $user->getEmail()])){
+            return false;
+        }
         return true;
     }
 }
