@@ -94,7 +94,7 @@ class UserController extends AbstractController
      */
     #[Route('/api/users/{id}', name: 'app_user_update', methods: ['PUT'])]
     #[OA\Tag('Users')]
-    public function updateOneUser(Request $request, User $currentUser, EntityManagerInterface $em): JsonResponse
+    public function updateOneUser(Request $request, User $currentUser): JsonResponse
     {
         $this->denyAccessUnlessGranted('USER_EDIT', $currentUser);
         if($this->userService->update($request, $currentUser)){
