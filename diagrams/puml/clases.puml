@@ -20,6 +20,40 @@ class Brand {
     + public getName()
 }
 
+class ProductService implements IPaginationService {
+    - private productRepository
+    - private cache
+    == Methods ==
+   + public findAllWithPagination()
+   + public countAll()
+   + public cache()
+}
+
+class UserService implements IPaginationService {
+    - private userRepository
+    - private cache
+    - private em
+    - private serializer
+    - private security
+    == Methods ==
+    + public findAllWithPagination()
+    + public find()
+    + public countAll()
+    + public cache()
+    + public delete()
+    + public create()
+    + public update()
+    + public checkBeforeCreate()
+    - private setCreateAtOnCreate()
+    - private attachToClient()
+}
+
+interface IPaginationService {
+    == Methods ==
+    + public findAllWithPagination()
+    + public countAll()
+}
+
 class Client {
     - private id
     - private email
@@ -67,6 +101,7 @@ Brand "1" o..> "0..*" Product:has
 Client "1" --o Role:is
 Client --> Product: consult
 Client --> User: handle
+
 
 @enduml
 

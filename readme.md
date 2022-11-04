@@ -23,6 +23,10 @@ DATABASE_URL="mysql://"LOGIN DATABASE":"PASSWORD DATABASE"@127.0.0.1:3306/"NAME 
 ```bash
 doctrine:database:create
 ```
+Fixtures are available:
+```bash
+docdtrine:fixtures:load
+```
 4. Create a `JWT` Folder <u><big>in</big></u> `config` folder
 5. Generate private key:
 ```bash
