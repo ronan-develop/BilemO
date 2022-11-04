@@ -51,7 +51,6 @@ class ProductService implements IPaginationService
         $idCache = "getAllProducts-".$page."-".$limit;
 
         return $this->cache->get($idCache, function (ItemInterface $item) use ($page, $limit) {
-            echo("NOT IN CACHE YET\n");
             $item->tag("productsCache");
             return $this->findAllWithPagination($page, $limit);
         });

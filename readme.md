@@ -1,16 +1,19 @@
 # BileMo
 
-### <u>Codacy Quality :</u>
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/04711dbfcc264ddd97630204b26d8fc2)](https://www.codacy.com/gl/ron2cuba/bilemo/dashboard?utm_source=gitlab.com&amp;utm_medium=referral&amp;utm_content=ron2cuba/bilemo&amp;utm_campaign=Badge_Grade)
 
-web service exposing a rest api
+Web service exposing a rest api
+
+<big style="color: red">⚠️ Voters are in place for the membership-belonging</big>
+
+sample data if needed: 
 
 ## <u>Setup</u>
-1. Clone repository and installing dependencies with your bash.
+1.  Clone repository and installing dependencies with your bash.
 ```bash
 git clone https://gitlab.com/ron2cuba/bilemo.git && composer install
 ```
-2. configure database in `.env` or `.env.local` <i><small>(prefer .env.local)</small></i>
+2.  configure database in `.env` or `.env.local` <i><small>(prefer .env.local)</small></i>
 
 Example for mysql:
 ```.dotenv
@@ -38,9 +41,9 @@ server:ca:install
 ```bash
 symfony serve -d
 ```
-9. Read documentation
+## Documentation
 
 ```txt
 https://127.0.0.1:8000/api/doc
 ```
-10. Generate a token with login_check route
+Generate a token on login_check route to use app

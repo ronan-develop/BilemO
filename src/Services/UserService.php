@@ -71,7 +71,6 @@ class UserService implements IPaginationService
         $idCache = "getAllUsers-".$page."-".$limit;
 
         return $this->cache->get($idCache, function (ItemInterface $item) use ($page, $limit) {
-            echo("NOT IN CACHE YET\n");
             $item->tag("usersCache");
             return $this->findAllWithPagination($page, $limit);
         });
