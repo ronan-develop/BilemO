@@ -5,6 +5,10 @@
 
 web service exposing a rest api
 
+<big style="color: red">⚠️ Voters are in place for the membership-belonging</big>
+
+sample data if needed: 
+
 ## <u>Setup</u>
 1. Clone repository and installing dependencies with your bash.
 ```bash
@@ -38,9 +42,9 @@ server:ca:install
 ```bash
 symfony serve -d
 ```
-9. Read documentation
+## Documentation
 
 ```txt
 https://127.0.0.1:8000/api/doc
 ```
-10. Generate a token with login_check route
+Generate a token on login_check route to use app
