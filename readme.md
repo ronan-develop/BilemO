@@ -6,7 +6,7 @@ Web service exposing a rest api
 
 <big style="color: red">⚠️ Voters are in place for the membership-belonging</big>
 
-sample data if needed: 
+sample data [here](./api-bilemo.sql) if needed:
 
 ## <u>Setup</u>
 1.  Clone repository and installing dependencies with your bash.
