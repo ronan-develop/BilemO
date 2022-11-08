@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Services\UserService;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -99,7 +98,7 @@ class UserController extends AbstractController
         $this->denyAccessUnlessGranted('USER_EDIT', $currentUser);
         if($this->userService->update($request, $currentUser)){
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
-        };
+        }
         return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
     }
 
