@@ -21,7 +21,7 @@ DATABASE_URL="mysql://"LOGIN DATABASE":"PASSWORD DATABASE"@127.0.0.1:3306/"NAME 
 ```
 3. Launch command in your bash
 ```bash
-doctrine:database:create
+doctrine:database:create && doctrine:schema:update --force
 ```
 Fixtures are available:
 ```bash
